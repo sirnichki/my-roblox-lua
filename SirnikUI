@@ -1,12 +1,10 @@
 --[[
-  SirnikUI v2 — с табами Combat, Main, Movement, Visuals, Misc
-  Author: Sirnik + HackerAI
+  SirnikUI v3 — Movement (с Textbox для Speed/Jump), Visuals, Combat, Main, Misc
 ]]
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
 local Player = Players.LocalPlayer
 local Mouse = Player:GetMouse()
 
@@ -20,17 +18,15 @@ G2L["1"]["Enabled"] = true
 
 -- Главное окно
 G2L["MainFrame"] = Instance.new("Frame", G2L["1"])
-G2L["MainFrame"]["Size"] = UDim2.new(0, 600, 0, 400)
-G2L["MainFrame"]["Position"] = UDim2.new(0.5, -300, 0.5, -200)
+G2L["MainFrame"]["Size"] = UDim2.new(0, 620, 0, 450)
+G2L["MainFrame"]["Position"] = UDim2.new(0.5, -310, 0.5, -225)
 G2L["MainFrame"]["BackgroundColor3"] = Color3.fromRGB(30, 30, 30)
 G2L["MainFrame"]["BorderSizePixel"] = 0
 G2L["MainFrame"]["Active"] = true
 G2L["MainFrame"]["Draggable"] = true
 
--- UI Corner
 Instance.new("UICorner", G2L["MainFrame"]).CornerRadius = UDim.new(0, 8)
 
--- UI Stroke
 local stroke = Instance.new("UIStroke", G2L["MainFrame"])
 stroke.Thickness = 2
 stroke.Color = Color3.fromRGB(80, 80, 80)
@@ -39,14 +35,14 @@ stroke.Color = Color3.fromRGB(80, 80, 80)
 G2L["Title"] = Instance.new("TextLabel", G2L["MainFrame"])
 G2L["Title"]["Size"] = UDim2.new(1, 0, 0, 35)
 G2L["Title"]["BackgroundColor3"] = Color3.fromRGB(45, 45, 45)
-G2L["Title"]["Text"] = "SirnikUI v2"
+G2L["Title"]["Text"] = "SirnikUI v3"
 G2L["Title"]["TextColor3"] = Color3.fromRGB(255, 255, 255)
 G2L["Title"]["FontFace"] = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
 G2L["Title"]["TextScaled"] = true
 Instance.new("UICorner", G2L["Title"]).CornerRadius = UDim.new(0, 8)
 G2L["Title"]["BorderSizePixel"] = 0
 
--- Закрыть кнопка
+-- Закрыть
 G2L["CloseBtn"] = Instance.new("TextButton", G2L["MainFrame"])
 G2L["CloseBtn"]["Size"] = UDim2.new(0, 30, 0, 30)
 G2L["CloseBtn"]["Position"] = UDim2.new(1, -35, 0, 2)
@@ -67,7 +63,7 @@ G2L["TabButtons"]["Position"] = UDim2.new(0, 0, 0, 35)
 G2L["TabButtons"]["BackgroundColor3"] = Color3.fromRGB(38, 38, 38)
 G2L["TabButtons"]["BorderSizePixel"] = 0
 
--- Контейнер для содержимого табов
+-- Контейнер
 G2L["TabContent"] = Instance.new("ScrollingFrame", G2L["MainFrame"])
 G2L["TabContent"]["Size"] = UDim2.new(1, -20, 1, -90)
 G2L["TabContent"]["Position"] = UDim2.new(0, 10, 0, 75)
@@ -76,7 +72,7 @@ G2L["TabContent"]["BorderSizePixel"] = 0
 G2L["TabContent"]["CanvasSize"] = UDim2.new(0, 0, 0, 0)
 G2L["TabContent"]["ScrollBarThickness"] = 5
 
--- Функция для создания табов
+-- Табы
 local Tabs = {}
 local ActiveTab = nil
 local TabButtonsList = {}
@@ -112,7 +108,6 @@ function CreateTab(name)
     Tabs[name] = tabFrame
     TabButtonsList[name] = btn
 
-    -- Активируем первый таб
     if #TabButtonsList == 1 then
         tabFrame.Visible = true
         btn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
@@ -122,17 +117,26 @@ function CreateTab(name)
     return tabFrame
 end
 
--- Функция для создания кнопок внутри табов
+-- Helper: обновить CanvasSize
+local function UpdateCanvas(parent)
+    local count = 0
+    for _, v in pairs(parent:GetChildren()) do
+        count = count + 1
+    end
+    parent.CanvasSize = UDim2.new(0, 0, 0, count * 55 + 20)
+end
+
+-- Кнопка
 function CreateButton(parent, text, callback, desc)
     local yOffset = 0
     for _, v in pairs(parent:GetChildren()) do
-        if v:IsA("TextButton") or v:IsA("TextLabel") then
+        if v:IsA("TextButton") or v:IsA("TextLabel") or v:IsA("TextBox") then
             yOffset = yOffset + 55
         end
     end
 
     local btn = Instance.new("TextButton", parent)
-    btn.Size = UDim2.new(0, 260, 0, 45)
+    btn.Size = UDim2.new(0, 260, 0, 40)
     btn.Position = UDim2.new(0, 10, 0, yOffset)
     btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     btn.Text = text
@@ -141,17 +145,14 @@ function CreateButton(parent, text, callback, desc)
     btn.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Medium, Enum.FontStyle.Normal)
     btn.BorderSizePixel = 0
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-
-    local strokeBtn = Instance.new("UIStroke", btn)
-    strokeBtn.Thickness = 1.5
+    Instance.new("UIStroke", btn).Thickness = 1.5
 
     btn.MouseButton1Click:Connect(callback)
 
-    -- Подпись если есть
     if desc then
         local lbl = Instance.new("TextLabel", parent)
-        lbl.Size = UDim2.new(0, 260, 0, 20)
-        lbl.Position = UDim2.new(0, 10, 0, yOffset + 45)
+        lbl.Size = UDim2.new(0, 260, 0, 15)
+        lbl.Position = UDim2.new(0, 15, 0, yOffset + 40)
         lbl.BackgroundTransparency = 1
         lbl.Text = desc
         lbl.TextColor3 = Color3.fromRGB(150, 150, 150)
@@ -159,23 +160,94 @@ function CreateButton(parent, text, callback, desc)
         lbl.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Light, Enum.FontStyle.Normal)
         lbl.BorderSizePixel = 0
         lbl.TextXAlignment = Enum.TextXAlignment.Left
+        lbl.TextSize = 14
     end
 
-    -- Обновляем CanvasSize
-    parent.CanvasSize = UDim2.new(0, 0, 0, yOffset + 60)
-
+    UpdateCanvas(parent)
     return btn
 end
 
--- Функция для создания toggle кнопки
+-- TextBox + Apply
+function CreateTextBox(parent, label, default, onApply, desc)
+    local yOffset = 0
+    for _, v in pairs(parent:GetChildren()) do
+        if v:IsA("TextButton") or v:IsA("TextLabel") or v:IsA("TextBox") then
+            yOffset = yOffset + 55
+        end
+    end
+
+    -- Лейбл
+    local lbl = Instance.new("TextLabel", parent)
+    lbl.Size = UDim2.new(0, 80, 0, 35)
+    lbl.Position = UDim2.new(0, 10, 0, yOffset + 5)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = label
+    lbl.TextColor3 = Color3.fromRGB(200, 200, 200)
+    lbl.TextScaled = true
+    lbl.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Medium, Enum.FontStyle.Normal)
+    lbl.BorderSizePixel = 0
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+
+    -- TextBox
+    local box = Instance.new("TextBox", parent)
+    box.Size = UDim2.new(0, 100, 0, 35)
+    box.Position = UDim2.new(0, 95, 0, yOffset + 5)
+    box.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+    box.Text = tostring(default)
+    box.TextColor3 = Color3.fromRGB(255, 255, 255)
+    box.TextScaled = true
+    box.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Medium, Enum.FontStyle.Normal)
+    box.BorderSizePixel = 0
+    box.ClearTextOnFocus = false
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 5)
+
+    -- Apply кнопка
+    local apply = Instance.new("TextButton", parent)
+    apply.Size = UDim2.new(0, 70, 0, 35)
+    apply.Position = UDim2.new(0, 200, 0, yOffset + 5)
+    apply.BackgroundColor3 = Color3.fromRGB(0, 120, 60)
+    apply.Text = "Apply"
+    apply.TextColor3 = Color3.fromRGB(255, 255, 255)
+    apply.TextScaled = true
+    apply.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Medium, Enum.FontStyle.Normal)
+    apply.BorderSizePixel = 0
+    Instance.new("UICorner", apply).CornerRadius = UDim.new(0, 5)
+    Instance.new("UIStroke", apply).Thickness = 1.5
+
+    apply.MouseButton1Click:Connect(function()
+        local val = tonumber(box.Text)
+        if val then
+            onApply(val)
+        end
+    end)
+
+    if desc then
+        local d = Instance.new("TextLabel", parent)
+        d.Size = UDim2.new(0, 260, 0, 15)
+        d.Position = UDim2.new(0, 15, 0, yOffset + 40)
+        d.BackgroundTransparency = 1
+        d.Text = desc
+        d.TextColor3 = Color3.fromRGB(150, 150, 150)
+        d.TextScaled = true
+        d.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Light, Enum.FontStyle.Normal)
+        d.BorderSizePixel = 0
+        d.TextXAlignment = Enum.TextXAlignment.Left
+    end
+
+    UpdateCanvas(parent)
+    return box, apply
+end
+
+-- Toggle
 function CreateToggle(parent, text, getState, setState, desc)
     local btn = CreateButton(parent, text, function()
         setState(not getState())
-        btn.Text = text .. (getState() and " [ON]" or " [OFF]")
         if getState() then
             btn.BackgroundColor3 = Color3.fromRGB(0, 150, 50)
+            btn.Text = text .. " [ON]"
         else
             btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            btn.Text = text .. " [OFF]"
         end
     end, desc)
 
@@ -190,14 +262,14 @@ function CreateToggle(parent, text, getState, setState, desc)
 end
 
 -- =============================================
--- СОЗДАНИЕ ТАБОВ
+-- TAB: MOVEMENT
 -- =============================================
-
--- TAB: Movement
 local tabMovement = CreateTab("Movement")
+
 CreateButton(tabMovement, "Fly", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
-end, "Режим полёта (клавиши управления)")
+end, "Режим полёта")
+
 CreateButton(tabMovement, "Infinite Jump", function()
     local Humanoid = Player.Character and Player.Character:FindFirstChild("Humanoid")
     if Humanoid then
@@ -210,7 +282,8 @@ CreateButton(tabMovement, "Infinite Jump", function()
             end
         end)
     end
-end, "Авто-прыжок каждый тик")
+end, "Авто-прыжок")
+
 CreateButton(tabMovement, "NoClip", function()
     local char = Player.Character
     if char then
@@ -220,24 +293,28 @@ CreateButton(tabMovement, "NoClip", function()
             end
         end
     end
-end, "Прохождение сквозь стены (однократно)")
-CreateButton(tabMovement, "Speed (x2)", function()
-    local Humanoid = Player.Character and Player.Character:FindFirstChild("Humanoid")
-    if Humanoid then
-        Humanoid.WalkSpeed = 32
-    end
-end, "Устанавливает скорость 32")
-CreateButton(tabMovement, "Jump Power (x2)", function()
-    local Humanoid = Player.Character and Player.Character:FindFirstChild("Humanoid")
-    if Humanoid then
-        Humanoid.JumpPower = 100
-    end
-end, "Устанавливает силу прыжка 100")
+end, "Сквозь стены (однократно)")
 
--- TAB: Visuals
+CreateTextBox(tabMovement, "WalkSpeed", 16, function(val)
+    local Humanoid = Player.Character and Player.Character:FindFirstChild("Humanoid")
+    if Humanoid then
+        Humanoid.WalkSpeed = val
+    end
+end, "Установить скорость бега")
+
+CreateTextBox(tabMovement, "JumpPower", 50, function(val)
+    local Humanoid = Player.Character and Player.Character:FindFirstChild("Humanoid")
+    if Humanoid then
+        Humanoid.JumpPower = val
+    end
+end, "Установить силу прыжка")
+
+-- =============================================
+-- TAB: VISUALS
+-- =============================================
 local tabVisuals = CreateTab("Visuals")
+
 local espEnabled = false
-local espConnections = {}
 CreateToggle(tabVisuals, "ESP", function() return espEnabled end, function(state)
     espEnabled = state
     if state then
@@ -245,47 +322,47 @@ CreateToggle(tabVisuals, "ESP", function() return espEnabled end, function(state
             if plr ~= Player then
                 local char = plr.Character
                 if char then
-                    local highlight = Instance.new("Highlight")
-                    highlight.Adornee = char
-                    highlight.FillColor = Color3.fromRGB(255, 50, 50)
-                    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                    highlight.FillTransparency = 0.5
-                    highlight.Parent = char
+                    local hl = Instance.new("Highlight")
+                    hl.Adornee = char
+                    hl.FillColor = Color3.fromRGB(255, 50, 50)
+                    hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+                    hl.FillTransparency = 0.5
+                    hl.Parent = char
                 end
             end
         end
-        espConnections[#espConnections + 1] = Players.PlayerAdded:Connect(function(plr)
-            plr.CharacterAdded:Connect(function(char)
-                if espEnabled then
-                    local highlight = Instance.new("Highlight")
-                    highlight.Adornee = char
-                    highlight.FillColor = Color3.fromRGB(255, 50, 50)
-                    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                    highlight.FillTransparency = 0.5
-                    highlight.Parent = char
-                end
-            end)
-        end)
     else
-        for _, v in pairs(Workspace:GetDescendants()) do
+        for _, v in pairs(workspace:GetDescendants()) do
             if v:IsA("Highlight") then
                 v:Destroy()
             end
         end
-        for _, conn in pairs(espConnections) do
-            conn:Disconnect()
-        end
-        espConnections = {}
     end
-end, "Подсвечивает игроков через стены")
+end, "Подсветка игроков")
 
--- TAB: Combat
+CreateButton(tabVisuals, "FullBright", function()
+    local light = game:GetService("Lighting")
+    light.Ambient = Color3.fromRGB(255, 255, 255)
+    light.Brightness = 2
+    light.ClockTime = 12
+    light.FogEnd = 100000
+end, "Максимальный свет")
+
+CreateButton(tabVisuals, "Remove Fog", function()
+    local light = game:GetService("Lighting")
+    light.FogEnd = 100000
+    light.FogStart = 100000
+end, "Убрать туман")
+
+-- =============================================
+-- TAB: COMBAT
+-- =============================================
 local tabCombat = CreateTab("Combat")
-CreateButton(tabCombat, "Aimbot (Basic)", function()
-    -- Простой аимбот — смотрит на ближайшего игрока
+
+CreateButton(tabCombat, "Aimbot (ПКМ)", function()
     local function getClosestPlayer()
-        local closest = nil
-        local shortestDist = math.huge
+        local closest
+        local shortest = math.huge
         local char = Player.Character
         if not char then return end
         local root = char:FindFirstChild("HumanoidRootPart")
@@ -298,8 +375,8 @@ CreateButton(tabCombat, "Aimbot (Basic)", function()
                     local pRoot = pChar:FindFirstChild("HumanoidRootPart")
                     if pRoot then
                         local dist = (root.Position - pRoot.Position).Magnitude
-                        if dist < shortestDist then
-                            shortestDist = dist
+                        if dist < shortest then
+                            shortest = dist
                             closest = pRoot
                         end
                     end
@@ -309,39 +386,22 @@ CreateButton(tabCombat, "Aimbot (Basic)", function()
         return closest
     end
 
-    local aimConn
-    aimConn = RunService.RenderStepped:Connect(function()
+    RunService.RenderStepped:Connect(function()
         if UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then
             local target = getClosestPlayer()
             if target then
-                local char = Player.Character
-                if char then
-                    local cam = workspace.CurrentCamera
-                    cam.CFrame = CFrame.new(cam.CFrame.Position, target.Position)
-                end
+                local cam = workspace.CurrentCamera
+                cam.CFrame = CFrame.new(cam.CFrame.Position, target.Position)
             end
         end
     end)
-end, "Прицел на ближ. игрока при ПКМ")
+end, "При нажатии ПКМ смотрит на игрока")
 
--- TAB: Main
+-- =============================================
+-- TAB: MAIN
+-- =============================================
 local tabMain = CreateTab("Main")
-CreateButton(tabMain, "FullBright", function()
-    local light = game:GetService("Lighting")
-    light.Ambient = Color3.fromRGB(255, 255, 255)
-    light.Brightness = 2
-    light.ClockTime = 12
-    light.FogEnd = 100000
-end, "Максимальная освещённость")
-CreateButton(tabMain, "Remove Fog", function()
-    local light = game:GetService("Lighting")
-    light.FogEnd = 100000
-    light.FogStart = 100000
-end, "Убирает туман")
-CreateButton(tabMain, "Rejoin Server", function()
-    local ts = game:GetService("TeleportService")
-    ts:Teleport(game.PlaceId, Player)
-end, "Перезаходит в сервер")
+
 CreateButton(tabMain, "Anti AFK", function()
     local vu = game:GetService("VirtualUser")
     Player.Idled:Connect(function()
@@ -351,28 +411,35 @@ CreateButton(tabMain, "Anti AFK", function()
     end)
 end, "Не кикнет за AFK")
 
--- TAB: Misc
+CreateButton(tabMain, "Rejoin", function()
+    local ts = game:GetService("TeleportService")
+    ts:Teleport(game.PlaceId, Player)
+end, "Перезайти в сервер")
+
+-- =============================================
+-- TAB: MISC
+-- =============================================
 local tabMisc = CreateTab("Misc")
-CreateButton(tabMisc, "Delete GUI", function()
-    G2L["1"]:Destroy()
-end, "Удаляет гуи полностью")
+
+CreateButton(tabMisc, "Infinite Yield", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+end, "Загружает админку")
+
 CreateButton(tabMisc, "Server Hop", function()
-    local http = game:GetService("HttpService")
     local api = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?limit=100"
     local data = game:HttpGet(api)
-    local decoded = http:JSONDecode(data)
-    local servers = decoded.data
-    for _, server in pairs(servers) do
+    local decoded = game:GetService("HttpService"):JSONDecode(data)
+    for _, server in pairs(decoded.data) do
         if server.id ~= game.JobId then
-            local ts = game:GetService("TeleportService")
-            ts:TeleportToPlaceInstance(game.PlaceId, server.id, Player)
+            game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, server.id, Player)
             break
         end
     end
-end, "Телепорт на другой сервер")
-CreateButton(tabMisc, "Infinite Yield (FE)", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
-end, "Загружает Infinite Yield Admin")
+end, "Сменить сервер")
+
+CreateButton(tabMisc, "Delete GUI", function()
+    G2L["1"]:Destroy()
+end, "Удаляет гуи")
 
 -- Финальный возврат
 return G2L["1"], require
