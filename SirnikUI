@@ -1,5 +1,5 @@
 --[[
-  SirnikUI v3 — исправленная версия
+  SirnikUI v3 — финальная рабочая версия
 ]]
 
 local Players = game:GetService("Players")
@@ -23,7 +23,39 @@ G2L["MainFrame"]["Position"] = UDim2.new(0.5, -310, 0.5, -225)
 G2L["MainFrame"]["BackgroundColor3"] = Color3.fromRGB(30, 30, 30)
 G2L["MainFrame"]["BorderSizePixel"] = 0
 G2L["MainFrame"]["Active"] = true
-G2L["MainFrame"]["Draggable"] = true
+
+-- Делаем Draggable вручную, чтобы работало на всех эксплоитах
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+G2L["MainFrame"].InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = G2L["MainFrame"].Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+G2L["MainFrame"].InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    if dragging and dragInput then
+        local delta = dragInput.Position - dragStart
+        G2L["MainFrame"].Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
 
 Instance.new("UICorner", G2L["MainFrame"]).CornerRadius = UDim.new(0, 8)
 
@@ -63,7 +95,7 @@ G2L["TabButtons"]["Position"] = UDim2.new(0, 0, 0, 35)
 G2L["TabButtons"]["BackgroundColor3"] = Color3.fromRGB(38, 38, 38)
 G2L["TabButtons"]["BorderSizePixel"] = 0
 
--- ScrollingFrame
+-- ScrollingFrame для контента
 G2L["TabContent"] = Instance.new("ScrollingFrame", G2L["MainFrame"])
 G2L["TabContent"]["Size"] = UDim2.new(1, -20, 1, -90)
 G2L["TabContent"]["Position"] = UDim2.new(0, 10, 0, 75)
@@ -71,6 +103,7 @@ G2L["TabContent"]["BackgroundColor3"] = Color3.fromRGB(30, 30, 30)
 G2L["TabContent"]["BorderSizePixel"] = 0
 G2L["TabContent"]["CanvasSize"] = UDim2.new(0, 0, 0, 0)
 G2L["TabContent"]["ScrollBarThickness"] = 5
+G2L["TabContent"]["AutomaticCanvasSize"] = Enum.AutomaticSize.Y
 
 -- Табы
 local Tabs = {}
@@ -79,7 +112,7 @@ local TabButtonsList = {}
 
 function CreateTab(name)
     local tabFrame = Instance.new("Frame", G2L["TabContent"])
-    tabFrame.Size = UDim2.new(1, 0, 1, 0)
+    tabFrame.Size = UDim2.new(1, 0, 0, 400)
     tabFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     tabFrame.BorderSizePixel = 0
     tabFrame.Visible = false
@@ -115,19 +148,6 @@ function CreateTab(name)
     end
 
     return tabFrame
-end
-
--- ИСПРАВЛЕННАЯ UpdateCanvas
-local function UpdateCanvas(parent)
-    local count = 0
-    for _, v in pairs(parent:GetChildren()) do
-        count = count + 1
-    end
-    -- Находим ScrollingFrame (родитель родителя)
-    local sf = parent.Parent
-    if sf and sf:IsA("ScrollingFrame") then
-        sf.CanvasSize = UDim2.new(0, 0, 0, count * 55 + 20)
-    end
 end
 
 -- Кнопка
@@ -167,7 +187,6 @@ function CreateButton(parent, text, callback, desc)
         lbl.TextSize = 14
     end
 
-    UpdateCanvas(parent)
     return btn
 end
 
@@ -235,7 +254,6 @@ function CreateTextBox(parent, label, default, onApply, desc)
         d.TextXAlignment = Enum.TextXAlignment.Left
     end
 
-    UpdateCanvas(parent)
     return box, apply
 end
 
@@ -426,17 +444,32 @@ CreateButton(tabMisc, "Infinite Yield", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
 end, "Загружает админку")
 
+-- ИСПРАВЛЕННЫЙ Server Hop
 CreateButton(tabMisc, "Server Hop", function()
-    local api = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?limit=100"
-    local data = game:HttpGet(api)
-    local decoded = game:GetService("HttpService"):JSONDecode(data)
-    for _, server in pairs(decoded.data) do
-        if server.id ~= game.JobId then
-            game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, server.id, Player)
-            break
+    pcall(function()
+        local api = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?limit=100"
+        local success, result = pcall(function()
+            return game:HttpGet(api)
+        end)
+        
+        if success then
+            local decoded = game:GetService("HttpService"):JSONDecode(result)
+            if decoded and decoded.data then
+                for _, server in pairs(decoded.data) do
+                    if server.id ~= game.JobId and tonumber(server.playing) and tonumber(server.maxPlayers) then
+                        if server.playing < server.maxPlayers then
+                            game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, server.id, Player)
+                            break
+                        end
+                    end
+                end
+            end
+        else
+            -- Fallback: просто реджойн
+            game:GetService("TeleportService"):Teleport(game.PlaceId, Player)
         end
-    end
-end, "Сменить сервер")
+    end)
+end, "Сменить сервер (свободные слоты)")
 
 CreateButton(tabMisc, "Delete GUI", function()
     G2L["1"]:Destroy()
