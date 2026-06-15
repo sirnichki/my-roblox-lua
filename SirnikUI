@@ -1,5 +1,5 @@
 --[[
-  SirnikUI v3 — Movement (с Textbox для Speed/Jump), Visuals, Combat, Main, Misc
+  SirnikUI v3 — исправленная версия
 ]]
 
 local Players = game:GetService("Players")
@@ -63,7 +63,7 @@ G2L["TabButtons"]["Position"] = UDim2.new(0, 0, 0, 35)
 G2L["TabButtons"]["BackgroundColor3"] = Color3.fromRGB(38, 38, 38)
 G2L["TabButtons"]["BorderSizePixel"] = 0
 
--- Контейнер
+-- ScrollingFrame
 G2L["TabContent"] = Instance.new("ScrollingFrame", G2L["MainFrame"])
 G2L["TabContent"]["Size"] = UDim2.new(1, -20, 1, -90)
 G2L["TabContent"]["Position"] = UDim2.new(0, 10, 0, 75)
@@ -117,13 +117,17 @@ function CreateTab(name)
     return tabFrame
 end
 
--- Helper: обновить CanvasSize
+-- ИСПРАВЛЕННАЯ UpdateCanvas
 local function UpdateCanvas(parent)
     local count = 0
     for _, v in pairs(parent:GetChildren()) do
         count = count + 1
     end
-    parent.CanvasSize = UDim2.new(0, 0, 0, count * 55 + 20)
+    -- Находим ScrollingFrame (родитель родителя)
+    local sf = parent.Parent
+    if sf and sf:IsA("ScrollingFrame") then
+        sf.CanvasSize = UDim2.new(0, 0, 0, count * 55 + 20)
+    end
 end
 
 -- Кнопка
@@ -176,7 +180,6 @@ function CreateTextBox(parent, label, default, onApply, desc)
         end
     end
 
-    -- Лейбл
     local lbl = Instance.new("TextLabel", parent)
     lbl.Size = UDim2.new(0, 80, 0, 35)
     lbl.Position = UDim2.new(0, 10, 0, yOffset + 5)
@@ -188,7 +191,6 @@ function CreateTextBox(parent, label, default, onApply, desc)
     lbl.BorderSizePixel = 0
     lbl.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- TextBox
     local box = Instance.new("TextBox", parent)
     box.Size = UDim2.new(0, 100, 0, 35)
     box.Position = UDim2.new(0, 95, 0, yOffset + 5)
@@ -201,7 +203,6 @@ function CreateTextBox(parent, label, default, onApply, desc)
     box.ClearTextOnFocus = false
     Instance.new("UICorner", box).CornerRadius = UDim.new(0, 5)
 
-    -- Apply кнопка
     local apply = Instance.new("TextButton", parent)
     apply.Size = UDim2.new(0, 70, 0, 35)
     apply.Position = UDim2.new(0, 200, 0, yOffset + 5)
@@ -338,7 +339,7 @@ CreateToggle(tabVisuals, "ESP", function() return espEnabled end, function(state
             end
         end
     end
-end, "Подсветка игроков")
+end, "Подсветка игроков через стены")
 
 CreateButton(tabVisuals, "FullBright", function()
     local light = game:GetService("Lighting")
