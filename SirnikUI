@@ -1,0 +1,388 @@
+--[=[
+ d888b  db    db d888888b      .d888b.      db      db    db  .d8b.  
+88' Y8b 88    88   `88'        VP  `8D      88      88    88 d8' `8b 
+88      88    88    88            odD'      88      88    88 88ooo88 
+88  ooo 88    88    88          .88'        88      88    88 88~~~88 
+88. ~8~ 88b  d88   .88.        j88.         88booo. 88b  d88 88   88    @uniquadev
+ Y888P  ~Y8888P' Y888888P      888888D      Y88888P ~Y8888P' YP   YP  CONVERTER 
+]=]
+
+-- Instances: 38 | Scripts: 5 | Modules: 0 | Tags: 0
+local G2L = {};
+
+-- StarterGui.SirnikUI
+G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+G2L["1"]["Enabled"] = false;
+G2L["1"]["Name"] = [[SirnikUI]];
+G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+
+
+-- StarterGui.SirnikUI.openb
+G2L["2"] = Instance.new("TextButton", G2L["1"]);
+G2L["2"]["TextWrapped"] = true;
+G2L["2"]["BorderSizePixel"] = 0;
+G2L["2"]["TextSize"] = 14;
+G2L["2"]["TextScaled"] = true;
+G2L["2"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["2"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["2"]["ZIndex"] = 200;
+G2L["2"]["Size"] = UDim2.new(0, 111, 0, 55);
+G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["2"]["Text"] = [[SirnikUI]];
+G2L["2"]["Name"] = [[openb]];
+G2L["2"]["Position"] = UDim2.new(0.41694, 0, 0.12709, 0);
+
+
+-- StarterGui.SirnikUI.openb.LocalScript
+G2L["3"] = Instance.new("LocalScript", G2L["2"]);
+
+
+
+-- StarterGui.SirnikUI.openb.UICorner
+G2L["4"] = Instance.new("UICorner", G2L["2"]);
+
+
+
+-- StarterGui.SirnikUI.openb.UIStroke
+G2L["5"] = Instance.new("UIStroke", G2L["2"]);
+G2L["5"]["Thickness"] = 2.5;
+G2L["5"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+-- StarterGui.SirnikUI.openb.Frame
+G2L["6"] = Instance.new("Frame", G2L["2"]);
+G2L["6"]["Visible"] = false;
+G2L["6"]["ZIndex"] = 100;
+G2L["6"]["BorderSizePixel"] = 0;
+G2L["6"]["BackgroundColor3"] = Color3.fromRGB(131, 131, 131);
+G2L["6"]["Size"] = UDim2.new(0, 297, 0, 286);
+G2L["6"]["Position"] = UDim2.new(1.21063, 0, 0.7263, 0);
+G2L["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["6"]["BackgroundTransparency"] = 0.25;
+
+
+-- StarterGui.SirnikUI.openb.Frame.UIStroke
+G2L["7"] = Instance.new("UIStroke", G2L["6"]);
+G2L["7"]["Thickness"] = 4;
+
+
+-- StarterGui.SirnikUI.openb.Frame.UICorner
+G2L["8"] = Instance.new("UICorner", G2L["6"]);
+
+
+
+-- StarterGui.SirnikUI.openb.Frame.UIDragDetector
+G2L["9"] = Instance.new("UIDragDetector", G2L["6"]);
+G2L["9"]["DragUDim2"] = UDim2.new(0, 256, 0, 15);
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions
+G2L["a"] = Instance.new("Folder", G2L["6"]);
+G2L["a"]["Name"] = [[functions]];
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.fly
+G2L["b"] = Instance.new("TextLabel", G2L["a"]);
+G2L["b"]["TextWrapped"] = true;
+G2L["b"]["BorderSizePixel"] = 0;
+G2L["b"]["TextSize"] = 14;
+G2L["b"]["TextScaled"] = true;
+G2L["b"]["BackgroundColor3"] = Color3.fromRGB(41, 41, 41);
+G2L["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["b"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["b"]["Size"] = UDim2.new(0, 65, 0, 65);
+G2L["b"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["b"]["Text"] = [[fly]];
+G2L["b"]["Name"] = [[fly]];
+G2L["b"]["Position"] = UDim2.new(0.04795, 0, 0.02473, 0);
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.fly.UICorner
+G2L["c"] = Instance.new("UICorner", G2L["b"]);
+
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.fly.UIStroke
+G2L["d"] = Instance.new("UIStroke", G2L["b"]);
+G2L["d"]["Thickness"] = 2.5;
+G2L["d"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.fly.TextButton
+G2L["e"] = Instance.new("TextButton", G2L["b"]);
+G2L["e"]["TextWrapped"] = true;
+G2L["e"]["BorderSizePixel"] = 0;
+G2L["e"]["TextSize"] = 14;
+G2L["e"]["TextScaled"] = true;
+G2L["e"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["e"]["Size"] = UDim2.new(0, 191, 0, 50);
+G2L["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["e"]["Text"] = [[Apply]];
+G2L["e"]["Position"] = UDim2.new(1.2, 0, 0.10769, 0);
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.fly.TextButton.LocalScript
+G2L["f"] = Instance.new("LocalScript", G2L["e"]);
+
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.fly.TextButton.UIStroke
+G2L["10"] = Instance.new("UIStroke", G2L["e"]);
+G2L["10"]["Thickness"] = 2.5;
+G2L["10"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.fly.TextButton.UICorner
+G2L["11"] = Instance.new("UICorner", G2L["e"]);
+
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.infinite jump
+G2L["12"] = Instance.new("TextLabel", G2L["a"]);
+G2L["12"]["TextWrapped"] = true;
+G2L["12"]["BorderSizePixel"] = 0;
+G2L["12"]["TextSize"] = 14;
+G2L["12"]["TextScaled"] = true;
+G2L["12"]["BackgroundColor3"] = Color3.fromRGB(41, 41, 41);
+G2L["12"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["12"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["12"]["Size"] = UDim2.new(0, 65, 0, 65);
+G2L["12"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["12"]["Text"] = [[infinite jump]];
+G2L["12"]["Name"] = [[infinite jump]];
+G2L["12"]["Position"] = UDim2.new(0.04795, 0, 0.24176, 0);
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.infinite jump.UICorner
+G2L["13"] = Instance.new("UICorner", G2L["12"]);
+
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.infinite jump.UIStroke
+G2L["14"] = Instance.new("UIStroke", G2L["12"]);
+G2L["14"]["Thickness"] = 2.5;
+G2L["14"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.infinite jump.TextButton
+G2L["15"] = Instance.new("TextButton", G2L["12"]);
+G2L["15"]["TextWrapped"] = true;
+G2L["15"]["BorderSizePixel"] = 0;
+G2L["15"]["TextSize"] = 14;
+G2L["15"]["TextScaled"] = true;
+G2L["15"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["15"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["15"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["15"]["Size"] = UDim2.new(0, 191, 0, 50);
+G2L["15"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["15"]["Text"] = [[Apply]];
+G2L["15"]["Position"] = UDim2.new(1.2, 0, 0.10769, 0);
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.infinite jump.TextButton.LocalScript
+G2L["16"] = Instance.new("LocalScript", G2L["15"]);
+
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.infinite jump.TextButton.UIStroke
+G2L["17"] = Instance.new("UIStroke", G2L["15"]);
+G2L["17"]["Thickness"] = 2.5;
+G2L["17"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.infinite jump.TextButton.UICorner
+G2L["18"] = Instance.new("UICorner", G2L["15"]);
+
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.ESP
+G2L["19"] = Instance.new("TextLabel", G2L["a"]);
+G2L["19"]["TextWrapped"] = true;
+G2L["19"]["BorderSizePixel"] = 0;
+G2L["19"]["TextSize"] = 14;
+G2L["19"]["TextScaled"] = true;
+G2L["19"]["BackgroundColor3"] = Color3.fromRGB(41, 41, 41);
+G2L["19"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["19"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["19"]["Size"] = UDim2.new(0, 65, 0, 65);
+G2L["19"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["19"]["Text"] = [[ESP]];
+G2L["19"]["Name"] = [[ESP]];
+G2L["19"]["Position"] = UDim2.new(0.04795, 0, 0.68407, 0);
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.ESP.UICorner
+G2L["1a"] = Instance.new("UICorner", G2L["19"]);
+
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.ESP.UIStroke
+G2L["1b"] = Instance.new("UIStroke", G2L["19"]);
+G2L["1b"]["Thickness"] = 2.5;
+G2L["1b"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.ESP.TextButton
+G2L["1c"] = Instance.new("TextButton", G2L["19"]);
+G2L["1c"]["TextWrapped"] = true;
+G2L["1c"]["BorderSizePixel"] = 0;
+G2L["1c"]["TextSize"] = 14;
+G2L["1c"]["TextScaled"] = true;
+G2L["1c"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["1c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["1c"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["1c"]["Size"] = UDim2.new(0, 191, 0, 50);
+G2L["1c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["1c"]["Text"] = [[Apply]];
+G2L["1c"]["Position"] = UDim2.new(1.2, 0, 0.10769, 0);
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.ESP.TextButton.LocalScript
+G2L["1d"] = Instance.new("LocalScript", G2L["1c"]);
+
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.ESP.TextButton.UIStroke
+G2L["1e"] = Instance.new("UIStroke", G2L["1c"]);
+G2L["1e"]["Thickness"] = 2.5;
+G2L["1e"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.ESP.TextButton.UICorner
+G2L["1f"] = Instance.new("UICorner", G2L["1c"]);
+
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.noclip
+G2L["20"] = Instance.new("TextLabel", G2L["a"]);
+G2L["20"]["TextWrapped"] = true;
+G2L["20"]["BorderSizePixel"] = 0;
+G2L["20"]["TextSize"] = 14;
+G2L["20"]["TextScaled"] = true;
+G2L["20"]["BackgroundColor3"] = Color3.fromRGB(41, 41, 41);
+G2L["20"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["20"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["20"]["Size"] = UDim2.new(0, 65, 0, 65);
+G2L["20"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["20"]["Text"] = [[noclip]];
+G2L["20"]["Name"] = [[noclip]];
+G2L["20"]["Position"] = UDim2.new(0.04795, 0, 0.46703, 0);
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.noclip.UICorner
+G2L["21"] = Instance.new("UICorner", G2L["20"]);
+
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.noclip.UIStroke
+G2L["22"] = Instance.new("UIStroke", G2L["20"]);
+G2L["22"]["Thickness"] = 2.5;
+G2L["22"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.noclip.TextButton
+G2L["23"] = Instance.new("TextButton", G2L["20"]);
+G2L["23"]["TextWrapped"] = true;
+G2L["23"]["BorderSizePixel"] = 0;
+G2L["23"]["TextSize"] = 14;
+G2L["23"]["TextScaled"] = true;
+G2L["23"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["23"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["23"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["23"]["Size"] = UDim2.new(0, 191, 0, 50);
+G2L["23"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["23"]["Text"] = [[Apply]];
+G2L["23"]["Position"] = UDim2.new(1.2, 0, 0.10769, 0);
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.noclip.TextButton.LocalScript
+G2L["24"] = Instance.new("LocalScript", G2L["23"]);
+
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.noclip.TextButton.UIStroke
+G2L["25"] = Instance.new("UIStroke", G2L["23"]);
+G2L["25"]["Thickness"] = 2.5;
+G2L["25"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+-- StarterGui.SirnikUI.openb.Frame.functions.noclip.TextButton.UICorner
+G2L["26"] = Instance.new("UICorner", G2L["23"]);
+
+
+
+-- StarterGui.SirnikUI.openb.LocalScript
+local function C_3()
+local script = G2L["3"];
+	button = script.Parent
+	frame = button:WaitForChild("Frame")
+	script.Parent.MouseButton1Click:Connect(function()
+		if frame.Visible == true then
+			frame.Visible = false
+		else
+			frame.Visible = true
+		end
+	end)
+	
+end;
+task.spawn(C_3);
+-- StarterGui.SirnikUI.openb.Frame.functions.fly.TextButton.LocalScript
+local function C_f()
+local script = G2L["f"];
+	button = script.Parent
+	script.Parent.MouseButton1Click:Connect(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
+	end)
+end;
+task.spawn(C_f);
+-- StarterGui.SirnikUI.openb.Frame.functions.infinite jump.TextButton.LocalScript
+local function C_16()
+local script = G2L["16"];
+	button = script.Parent
+	script.Parent.MouseButton1Click:Connect(function()
+		local Players = game:GetService("Players")
+		local Player = Players.LocalPlayer
+		local Character = Player.Character or Player.CharacterAdded:Wait()
+	
+		local Humanoid = Character:WaitForChild("Humanoid")
+	
+		-- Function to jump continuously
+		local function autoJump()
+			if Humanoid.Jump then
+				Humanoid:ChangeState("Jumping")
+			end
+		end
+	
+		game:GetService("RunService").Heartbeat:Connect(autoJump)
+	
+		print("Infinite Auto-Jump Script loaded!")
+	end)
+	
+end;
+task.spawn(C_16);
+-- StarterGui.SirnikUI.openb.Frame.functions.ESP.TextButton.LocalScript
+local function C_1d()
+local script = G2L["1d"];
+	button = script.Parent
+	script.Parent.MouseButton1Click:Connect(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Yahahahau/Ultimate-Esp-v1/refs/heads/main/Ultimate%20esp%20v1.lua"))()
+	end)
+	
+end;
+task.spawn(C_1d);
+-- StarterGui.SirnikUI.openb.Frame.functions.noclip.TextButton.LocalScript
+local function C_24()
+local script = G2L["24"];
+	button = script.Parent
+	script.Parent.MouseButton1Click:Connect(function()
+		loadstring(game:HttpGet("https://pastebin.com/raw/2JZWpiKn", true))()
+	end)
+end;
+task.spawn(C_24);
+-- Включаем GUI
+G2L["1"].Enabled = true
+
+return G2L["1"], require;
