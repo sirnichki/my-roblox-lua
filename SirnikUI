@@ -616,5 +616,7 @@ local script = G2L["39"];
 	
 end;
 task.spawn(C_39);
+-- Включаем GUI
+G2L["1"].Enabled = true
 
 return G2L["1"], require;
