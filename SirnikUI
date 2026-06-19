@@ -765,109 +765,111 @@ task.spawn(C_1e);
 -- StarterGui.SirnikUI.Frame.openb.Frame.Sirnoe.Frame.noclip.TextButton.LocalScript
 local function C_25()
 local script = G2L["25"];
-	--== Sirnik Noclip Mobile v1 ==--
+	button = script.Parent
+	script.Parent.MouseButton1Click:Connect(function()
+		local Players = game:GetService("Players")
+		local RunService = game:GetService("RunService")
+		local UserInputService = game:GetService("UserInputService")
+		local StarterGui = game:GetService("StarterGui")
 	
-	local Players = game:GetService("Players")
-	local RunService = game:GetService("RunService")
-	local UserInputService = game:GetService("UserInputService")
-	local StarterGui = game:GetService("StarterGui")
+		local LP = Players.LocalPlayer
+		local NoclipEnabled = true
 	
-	local LP = Players.LocalPlayer
-	local NoclipEnabled = true
+		-- Функция noclip
+		local function SetNoclip(state)
+			if not LP.Character then return end
 	
-	-- Функция noclip
-	local function SetNoclip(state)
-		if not LP.Character then return end
-	
-		for _, part in pairs(LP.Character:GetDescendants()) do
-			if part:IsA("BasePart") then
-				part.CanCollide = not state
+			for _, part in pairs(LP.Character:GetDescendants()) do
+				if part:IsA("BasePart") then
+					part.CanCollide = not state
+				end
 			end
 		end
-	end
 	
-	-- Постоянно применяем noclip (на случай появления новых частей)
-	local function NoclipLoop()
-		if not NoclipEnabled then return end
-		if not LP.Character then return end
+		-- Постоянно применяем noclip (на случай появления новых частей)
+		local function NoclipLoop()
+			if not NoclipEnabled then return end
+			if not LP.Character then return end
 	
-		for _, part in pairs(LP.Character:GetDescendants()) do
-			if part:IsA("BasePart") then
-				part.CanCollide = false
+			for _, part in pairs(LP.Character:GetDescendants()) do
+				if part:IsA("BasePart") then
+					part.CanCollide = false
+				end
 			end
 		end
-	end
 	
-	RunService.Stepped:Connect(NoclipLoop)
+		RunService.Stepped:Connect(NoclipLoop)
 	
-	-- При каждом появлении персонажа
-	LP.CharacterAdded:Connect(function(char)
-		-- Ждём пока загрузится
-		char:WaitForChild("Humanoid")
-		task.wait(0.5)
-		SetNoclip(NoclipEnabled)
+		-- При каждом появлении персонажа
+		LP.CharacterAdded:Connect(function(char)
+			-- Ждём пока загрузится
+			char:WaitForChild("Humanoid")
+			task.wait(0.5)
+			SetNoclip(NoclipEnabled)
+		end)
+	
+		-- GUI для телефона
+		local ScreenGui = Instance.new("ScreenGui")
+		ScreenGui.Name = "SirnikNoclipGUI"
+		ScreenGui.ResetOnSpawn = false
+		ScreenGui.Parent = LP:WaitForChild("PlayerGui")
+	
+		-- Основная кнопка
+		local noclipButton = Instance.new("TextButton")
+		noclipButton.Size = UDim2.new(0, 70, 0, 70)
+		noclipButton.Position = UDim2.new(0.05, 0, 0.75, 0)
+		noclipButton.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
+		noclipButton.BackgroundTransparency = 0.3
+		noclipButton.Text = "NO\nCLIP"
+		noclipButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+		noclipButton.TextScaled = true
+		noclipButton.Font = Enum.Font.GothamBold
+		noclipButton.Draggable = true
+		noclipButton.Active = true
+	
+		local noclipCorner = Instance.new("UICorner")
+		noclipCorner.CornerRadius = UDim.new(1, 0)
+		noclipCorner.Parent = noclipButton
+	
+		-- Статус-индикатор
+		local statusLabel = Instance.new("TextLabel")
+		statusLabel.Size = UDim2.new(0, 70, 0, 20)
+		statusLabel.Position = UDim2.new(0.05, 0, 0.72, 0)
+		statusLabel.BackgroundTransparency = 1
+		statusLabel.Text = "🟢 ON"
+		statusLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+		statusLabel.TextScaled = true
+		statusLabel.Font = Enum.Font.GothamBold
+		statusLabel.Parent = ScreenGui
+	
+		noclipButton.Parent = ScreenGui
+	
+		-- Логика
+		noclipButton.MouseButton1Click:Connect(function()
+			NoclipEnabled = not NoclipEnabled
+			SetNoclip(NoclipEnabled)
+	
+			if NoclipEnabled then
+				noclipButton.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
+				statusLabel.Text = "🟢 ON"
+				statusLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+			else
+				noclipButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+				statusLabel.Text = "🔴 OFF"
+				statusLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+			end
+		end)
+	
+		-- Нотификация
+		StarterGui:SetCore("SendNotification", {
+			Title = "Sirnik Noclip",
+			Text = "Загружен! Нажми кнопку для вкл/выкл",
+			Duration = 3
+		})
+	
+		print("Sirnik Noclip Mobile loaded!")
 	end)
 	
-	-- GUI для телефона
-	local ScreenGui = Instance.new("ScreenGui")
-	ScreenGui.Name = "SirnikNoclipGUI"
-	ScreenGui.ResetOnSpawn = false
-	ScreenGui.Parent = LP:WaitForChild("PlayerGui")
-	
-	-- Основная кнопка
-	local noclipButton = Instance.new("TextButton")
-	noclipButton.Size = UDim2.new(0, 70, 0, 70)
-	noclipButton.Position = UDim2.new(0.05, 0, 0.75, 0)
-	noclipButton.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
-	noclipButton.BackgroundTransparency = 0.3
-	noclipButton.Text = "NO\nCLIP"
-	noclipButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	noclipButton.TextScaled = true
-	noclipButton.Font = Enum.Font.GothamBold
-	noclipButton.Draggable = true
-	noclipButton.Active = true
-	
-	local noclipCorner = Instance.new("UICorner")
-	noclipCorner.CornerRadius = UDim.new(1, 0)
-	noclipCorner.Parent = noclipButton
-	
-	-- Статус-индикатор
-	local statusLabel = Instance.new("TextLabel")
-	statusLabel.Size = UDim2.new(0, 70, 0, 20)
-	statusLabel.Position = UDim2.new(0.05, 0, 0.72, 0)
-	statusLabel.BackgroundTransparency = 1
-	statusLabel.Text = "🟢 ON"
-	statusLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
-	statusLabel.TextScaled = true
-	statusLabel.Font = Enum.Font.GothamBold
-	statusLabel.Parent = ScreenGui
-	
-	noclipButton.Parent = ScreenGui
-	
-	-- Логика
-	noclipButton.MouseButton1Click:Connect(function()
-		NoclipEnabled = not NoclipEnabled
-		SetNoclip(NoclipEnabled)
-	
-		if NoclipEnabled then
-			noclipButton.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
-			statusLabel.Text = "🟢 ON"
-			statusLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
-		else
-			noclipButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-			statusLabel.Text = "🔴 OFF"
-			statusLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-		end
-	end)
-	
-	-- Нотификация
-	StarterGui:SetCore("SendNotification", {
-		Title = "Sirnik Noclip",
-		Text = "Загружен! Нажми кнопку для вкл/выкл",
-		Duration = 3
-	})
-	
-	print("Sirnik Noclip Mobile loaded!")
 end;
 task.spawn(C_25);
 -- StarterGui.SirnikUI.Frame.openb.Frame.Visuals.Frame.ESP.TextButton.LocalScript
